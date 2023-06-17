@@ -1,7 +1,11 @@
 import styled from '@emotion/styled'
 import * as Dialog from '@radix-ui/react-dialog';
 
-const CreateTaskModal = (props: any) => {
+interface Props {
+  isLogin: boolean;
+};
+
+const CreateTaskModal = (props: Props) => {
   const Center = styled.div`
     display: grid;
     place-items: center;
@@ -86,7 +90,7 @@ const CreateTaskModal = (props: any) => {
           <Modal>
             <ModalTitle>タスクを追加</ModalTitle>
             <Input placeholder="ここにタスクを入力"></Input>
-            <Button>個人へ追加</Button>
+            <Button>追加</Button>
             {props.isLogin && <Button>グループへ追加</Button>}
             <Dialog.Close asChild>
               <Button>閉じる</Button>
