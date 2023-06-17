@@ -10,7 +10,7 @@ interface User {
   created_at: string,
 }
 
-interface PostUserRequest extends NextApiRequest{
+interface UserRequest extends NextApiRequest{
   body: undefined | {
     clerk_id: string,
     name: string,
@@ -19,15 +19,15 @@ interface PostUserRequest extends NextApiRequest{
 
 
 export default async function handler(
-  req: PostUserRequest,
+  req: UserRequest,
   res: NextApiResponse<User[]>
 ) {
-  if (!req.body || !req.body.clerk_id || !req.body.name) {
-    res.status(400).end()
-    return
-  }
-
   if (req.method === 'POST') {
+    if (!req.body || !req.body.clerk_id || !req.body.name) {
+      res.status(400).end()
+      return
+    }
+
     const connection = await createConnection({
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
