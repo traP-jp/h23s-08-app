@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "docker compose up -d && next build",
     "start": "next start",
     "lint": "next lint",
     "fix": "next lint --fix && prettier --write './src/**/*' --cache",
