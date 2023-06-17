@@ -1,9 +1,12 @@
 import styled from '@emotion/styled'
-import * as Dialog from '@radix-ui/react-dialog';
+import * as Tabs from '@radix-ui/react-tabs'
+import * as Dialog from '@radix-ui/react-dialog'
+import * as Select from '@radix-ui/react-select'
 
 interface Props {
-  isLogin: boolean;
-};
+  isLogin: boolean,
+  groupList: string[],
+}
 
 const CreateTaskModal = (props: Props) => {
   const Center = styled.div`
@@ -37,14 +40,9 @@ const CreateTaskModal = (props: Props) => {
   `
   const Modal = styled(Dialog.Content)`
     /* 板の部分 */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: center;
-    gap: 8px;
     position: relative;
     width: 320px;
-    height: 200px;
+    height: 240px;
     background: #ba9162;
 
     /* 棒の部分 */
@@ -53,12 +51,27 @@ const CreateTaskModal = (props: Props) => {
       position: absolute;
       display: block;
       width: 32px;
-      height: 320px;
+      height: 360px;
       top: -32px;
       left: calc(50% - 16px);
       z-index: -1;
       background: #885f30;
     }
+  `
+  const TabsContent = styled(Tabs.Content)`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    gap: 8px;
+  `
+  const SelectTrigger = styled(Select.Trigger)`
+    width: 90%;
+    color: blue;
+  `
+  const SelectContent = styled(Select.Content)`
+    width: 90%;
+    color: red;
   `
   const ModalTitle = styled(Dialog.Title)`
     color: white;
@@ -88,18 +101,60 @@ const CreateTaskModal = (props: Props) => {
         <Overlay />
         <Center>
           <Modal>
-            <ModalTitle>タスクを追加</ModalTitle>
-            <Input placeholder="ここにタスクを入力"></Input>
-            <Button>追加</Button>
-            {props.isLogin && <Button>グループへ追加</Button>}
-            <Dialog.Close asChild>
-              <Button>閉じる</Button>
-            </Dialog.Close>
+            <Tabs.Root defaultValue='personal'>
+              <Tabs.List>
+                <Tabs.Trigger value='personal'>
+                  個人
+                </Tabs.Trigger>
+                <Tabs.Trigger value='group'>
+                  グループ
+                </Tabs.Trigger>
+              </Tabs.List>
+              <TabsContent value='personal'>
+                <ModalTitle>タスクを追加</ModalTitle>
+                <Input placeholder="ここにタスクを入力"></Input>
+                <Button>個人に追加</Button>
+                <Dialog.Close asChild>
+                  <Button>閉じる</Button>
+                </Dialog.Close>
+              </TabsContent>
+              <TabsContent value='group'>
+                <ModalTitle>タスクを追加</ModalTitle>
+                <Input placeholder="ここにタスクを入力"></Input>
+                <Select.Root>
+                  <SelectTrigger>
+                    <Select.Value placeholder='グループを選択' />
+                    <Select.Icon />
+                  </SelectTrigger>
+                
+                  <Select.Portal>
+                    <SelectContent>
+                      <Select.ScrollUpButton />
+                      <Select.Viewport>
+                        <Select.Group>
+                          {props.groupList.map(group => (
+                            <Select.Item key={group} value={group}>
+                              <Select.ItemText>{group}</Select.ItemText>
+                            </Select.Item>
+                          ))}
+                        </Select.Group>
+                      </Select.Viewport>
+                      <Select.ScrollDownButton />
+                      <Select.Arrow />
+                    </SelectContent>
+                  </Select.Portal>
+                </Select.Root>
+                <Button>グループに追加</Button>
+                <Dialog.Close asChild>
+                  <Button>閉じる</Button>
+                </Dialog.Close>
+              </TabsContent>
+            </Tabs.Root>
           </Modal>
         </Center>
       </Dialog.Portal>
     </Dialog.Root>
   )
-};
+}
 
-export default CreateTaskModal;
+export default CreateTaskModal
