@@ -25,10 +25,11 @@ export default async function handler(
   // TODO: handle error
   if (req.method === 'POST') {
     const connection = await createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: 'root',
-      database: 'h23s_08'
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
     });
     
     await connection.execute(
@@ -49,14 +50,6 @@ export default async function handler(
     const [rows] = await connection.execute(
       'SELECT * FROM `users`'
     );
-    // // with placeholder
-    // connection.query(
-    //   'SELECT * FROM `table` WHERE `name` = ? AND `age` > ?',
-    //   ['Page', 45],
-    //   function(err, results) {
-    //     console.log(results);
-    //   }
-    // );
 
     res.status(200).json(rows as User[])
   }
