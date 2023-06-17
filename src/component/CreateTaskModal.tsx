@@ -10,6 +10,15 @@ import { useState } from 'react';
 
 
 const CreateTaskModal = () => {
+  const Center = styled.div`
+    display: grid;
+    place-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  `
   const Button = styled.button`
     background: gold;
     color: #885f30;
@@ -53,6 +62,7 @@ const CreateTaskModal = () => {
   const InputContent = styled.textarea`
     background: white;
     width: 90%;
+    height: 100px;
     border-radius: 4px;
     padding: 4px;
   `
@@ -73,14 +83,16 @@ const CreateTaskModal = () => {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Overlay />
-        <Modal>
-          <ModalTitle>タスクを追加</ModalTitle>
-          <InputContent id="content" onChange={(e) => setContentValue(e.target.value)} value={contentValue} placeholder="ここにタスクを入力"></InputContent>
-          <Button onClick={() => {alert(contentValue + "を追加します"); setContentValue("")}}>追加</Button>
-          <Dialog.Close asChild>
-            <Button>閉じる</Button>
-          </Dialog.Close>
-        </Modal>
+        <Center>
+          <Modal>
+            <ModalTitle>タスクを追加</ModalTitle>
+            <InputContent id="content" onChange={(e) => setContentValue(e.target.value)} value={contentValue} placeholder="ここにタスクを入力"></InputContent>
+            <Button onClick={() => {alert(contentValue + "を追加します"); setContentValue("")}}>追加</Button>
+            <Dialog.Close asChild>
+              <Button>閉じる</Button>
+            </Dialog.Close>
+          </Modal>
+        </Center>
       </Dialog.Portal>
     </Dialog.Root>
   )
