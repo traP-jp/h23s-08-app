@@ -1,15 +1,7 @@
-// タスク追加 (モーダル)
-// 看板に書き込む
-// タイトル
-// 期限 (必須ではない)
-// 詳細はなし
-
 import styled from '@emotion/styled'
 import * as Dialog from '@radix-ui/react-dialog';
-import { useState } from 'react';
 
-
-const CreateTaskModal = () => {
+const CreateTaskModal = (props: any) => {
   const Center = styled.div`
     display: grid;
     place-items: center;
@@ -27,6 +19,16 @@ const CreateTaskModal = () => {
     border-radius: 4px;
   `
   const ButtonTrigger = styled.button`
+    position: fixed;
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    backgroud: white;
+    left: calc(50% - 32px);
+    bottom: 16px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
     border: 1px solid black;
   `
   const Modal = styled(Dialog.Content)`
@@ -48,7 +50,7 @@ const CreateTaskModal = () => {
       display: block;
       width: 32px;
       height: 320px;
-      top: -20px;
+      top: -32px;
       left: calc(50% - 16px);
       z-index: -1;
       background: #885f30;
@@ -59,7 +61,7 @@ const CreateTaskModal = () => {
     font-size: large;
     font-weight: bold;
   `
-  const InputContent = styled.textarea`
+  const Input = styled.textarea`
     background: white;
     width: 90%;
     height: 100px;
@@ -72,22 +74,20 @@ const CreateTaskModal = () => {
     inset: 0;
     z-index: -2;
   `
-
-
-  const [contentValue, setContentValue] = useState<string>("");
   
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <ButtonTrigger>開く</ButtonTrigger>
+        <ButtonTrigger>+</ButtonTrigger>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Overlay />
         <Center>
           <Modal>
             <ModalTitle>タスクを追加</ModalTitle>
-            <InputContent id="content" onChange={(e) => setContentValue(e.target.value)} value={contentValue} placeholder="ここにタスクを入力"></InputContent>
-            <Button onClick={() => {alert(contentValue + "を追加します"); setContentValue("")}}>追加</Button>
+            <Input placeholder="ここにタスクを入力"></Input>
+            <Button>個人へ追加</Button>
+            {props.isLogin && <Button>グループへ追加</Button>}
             <Dialog.Close asChild>
               <Button>閉じる</Button>
             </Dialog.Close>
