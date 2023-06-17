@@ -60,6 +60,7 @@ const CreateTaskModal = () => {
     background-color: rgba(0, 0, 0, .5);
     position: fixed;
     inset: 0;
+    z-index: -2;
   `
 
 
