@@ -1,5 +1,10 @@
-import { Stage, Container, Sprite, Text } from '@pixi/react'
+import {
+  Stage,
+  Container,
+  Text,
+} from '@pixi/react'
 import * as PIXI from 'pixi.js'
+import { SwayAquaticPlants } from './SwayAquaticPlants'
 
 interface Props {
   width: number
@@ -13,12 +18,15 @@ export const MainView: React.FC<Props> = ({ width, height }) => {
       height={height}
       options={{ backgroundColor: 0x1b2668 }}
     >
-      <Container x={width} y={height}>
-        <Text
-          text='Hello World!'
-          style={new PIXI.TextStyle({ fill: 0xedf5f7 })}
-        />
-      </Container>
+    <Container x={0} y={0}>
+      <SwayAquaticPlants />
+      <Text
+        text='Hello World!'
+        style={new PIXI.TextStyle({ fill: 0xedf5f7 })}
+        x={0}
+        y={0}
+      />
+    </Container>
     </Stage>
   )
 }
