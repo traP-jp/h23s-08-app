@@ -43,6 +43,12 @@ export default async function handler(
 
     res.status(201).end()
   } else {
+    console.log({
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      database: process.env.DB_DATABASE,
+    })
     const connection = await createConnection({
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
