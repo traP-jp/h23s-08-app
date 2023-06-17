@@ -1,9 +1,4 @@
-import {
-  Container,
-  Sprite,
-  withFilters,
-  useTick,
-} from '@pixi/react'
+import { Container, Sprite, withFilters, useTick } from '@pixi/react'
 import * as PIXI from 'pixi.js'
 import Mizukusa01 from './assets/mizukusa_01.png'
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
@@ -30,9 +25,12 @@ export const SwayAquaticPlants: React.FC<Props> = props => {
     setRenderFilter(true)
   }, [])
 
-  const [swingValue, addSwingValue] = useSwinger(0, useMemo(() => {
-    return [0, 1000]
-  }, []))
+  const [swingValue, addSwingValue] = useSwinger(
+    0,
+    useMemo(() => {
+      return [0, 1000]
+    }, [])
+  )
   const config = useMemo(() => {
     return {
       x: swingValue,
@@ -61,11 +59,7 @@ export const SwayAquaticPlants: React.FC<Props> = props => {
             scale: new PIXI.Point(30, 60),
           }}
         >
-          <Sprite
-            image={Mizukusa01.src}
-            width={362}
-            height={780}
-          />
+          <Sprite image={Mizukusa01.src} width={362} height={780} />
         </Filters>
       )}
     </Container>
