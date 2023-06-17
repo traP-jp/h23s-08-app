@@ -38,7 +38,7 @@ const CreateTaskModal = () => {
         <Dialog.Overlay />
         <Modal>
           <ModalTitle>タスクを追加</ModalTitle>
-          <InputContent id="content" onChange={(e) => setContentValue(e.target.value)} placeholder="ここにタスクを入力">{contentValue}</InputContent>
+          <InputContent id="content" onBlur={(e) => setContentValue(e.target.value)} placeholder="ここにタスクを入力">{contentValue}</InputContent>
           <ButtonClose asChild onClick={() => {alert(contentValue + "を追加します"); setContentValue("")}}>
             <button>追加</button>
           </ButtonClose>
