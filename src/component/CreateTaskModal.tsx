@@ -6,6 +6,7 @@
 
 import styled from '@emotion/styled'
 import * as Dialog from '@radix-ui/react-dialog';
+import { useState } from 'react';
 
 
 const CreateTaskModal = () => {
@@ -18,17 +19,16 @@ const CreateTaskModal = () => {
   const Modal = styled(Dialog.Content)`
     border: 1px solid black;
   `
-  const Description = styled(Dialog.Description)`
-    color: gray;
-    font-size: small;
-  `
   const ModalTitle = styled(Dialog.Title)`
     font-size: large;
     font-weight: bold;
   `
-  const InputContent = styled.input`
+  const InputContent = styled.textarea`
     border: 1px solid black;
   `
+
+  const [contentValue, setContentValue] = useState<string>("");
+  
   return (
     <Dialog.Root>
       <ButtonOpen asChild>
@@ -38,16 +38,8 @@ const CreateTaskModal = () => {
         <Dialog.Overlay />
         <Modal>
           <ModalTitle>タスクを追加</ModalTitle>
-          <Description>
-            追加しましょう
-          </Description>
-          <fieldset>
-            <label htmlFor="content">
-              追加するタスク：
-            </label>
-            <InputContent id="content" placeholder="ここにタスクを入力" />
-          </fieldset>
-          <ButtonClose asChild>
+          <InputContent id="content" onChange={(e) => setContentValue(e.target.value)} placeholder="ここにタスクを入力">{contentValue}</InputContent>
+          <ButtonClose asChild onClick={() => {alert(contentValue + "を追加します"); setContentValue("")}}>
             <button>追加</button>
           </ButtonClose>
           <ButtonClose asChild>
