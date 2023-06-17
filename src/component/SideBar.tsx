@@ -1,13 +1,11 @@
 import styled from '@emotion/styled'
+import { ComponentProps } from 'react'
 
 
 const Xbutton = styled.button`
     color: #fff;
     font-size: 40px;
 `
-function Closebutton(){
-    return <Xbutton>×</Xbutton>;
-}
 
 const TaskBottomButton = styled.div`
     display: flex;
@@ -20,7 +18,6 @@ const TaskBottomButtonChild  = styled.div`
     height: 10px;
     
 `
-
 const TextButton = styled.button`
     margin-top: 20px;
     color: #fff;
@@ -28,10 +25,11 @@ const TextButton = styled.button`
     padding: 10px 30px;
 `
 
-function TaskButton(){
+type Props = ComponentProps<'button'>
+function TaskButton(props: Props){
     return (
         <div>
-            <TextButton>タスク管理</TextButton>
+            <TextButton {...props}>タスク管理</TextButton>
             <TaskBottomButton>
                 <TaskBottomButtonChild />
                 <TaskBottomButtonChild />
@@ -39,12 +37,7 @@ function TaskButton(){
         </div>
     )
 }
-function AddGroupButton(props: { isLogin: boolean; }){
-    const text = props.isLogin ? "＋ グループ追加" : "ログイン";
-    return (
-        <TextButton>{text}</TextButton>
-    )
-}
+
 const Line = styled.hr`
     background-color: #fff;
     height: 2px;
@@ -59,11 +52,11 @@ const GroupButton = styled.button`
     margin-top: 5px;
 `
 function GroupList(props: { groupList: string[]; }){
-    const items=[];
-    for (let i=0; i<props.groupList.length;i++){
-        items.push(<div><GroupButton>{props.groupList[i]}</GroupButton></div>)
-    }
-    return <div>{items}</div>;
+    return (
+        <div>
+            {props.groupList.map(group => (<div key={group}><GroupButton>{group}</GroupButton></div>))}
+        </div>
+    )
 }
 
 const Back = styled.div`
@@ -73,22 +66,40 @@ const Center = styled.div`
     display: flex;
     justify-content: center;
 `
+const isLogin=true;
 export default function Sidebar(){
     return (
         <Back>
-            <div>
-                <Closebutton />
-            </div>
+            <Xbutton>×</Xbutton>
             <Center>
-                <TaskButton />
+                <TaskButton onClick={() => {
+                    alert('You Clicked Task Button!')
+                }}/>
             </Center>
             <Line />
-            <Center>
-                <GroupList groupList={["グループ1", "グループ2", "グループ3"]}/>
-            </Center>
-            <Center>
-                <AddGroupButton isLogin={true} />
-            </Center>
+            {isLogin ? 
+            (
+                <div>
+                    <Center>
+                        <GroupList groupList={["グループ1", "グループ2", "グループ3"]}/>
+                    </Center>
+                    <Center>
+                        <TextButton onClick={() => {
+                            alert('You Clicked Add Group Button!')
+                        }}>＋ グループ追加</TextButton>
+                    </Center>
+                </div>
+            ):(
+                <div>
+                    <Center>
+                        <TextButton onClick={() => {
+                            alert('You Clicked Login Button!')
+                        }}>ログイン</TextButton>
+                        
+                    </Center>
+                </div>
+            )
+            }
         </Back>
     )
 }
