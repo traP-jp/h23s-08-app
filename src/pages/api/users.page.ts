@@ -11,7 +11,7 @@ interface User {
 }
 
 interface PostUserRequest extends NextApiRequest{
-  body: {
+  body: undefined | {
     clerk_id: string,
     name: string,
   }
@@ -22,7 +22,11 @@ export default async function handler(
   req: PostUserRequest,
   res: NextApiResponse<User[]>
 ) {
-  // TODO: handle error
+  if (!req.body || !req.body.clerk_id || !req.body.name) {
+    res.status(400).end()
+    return
+  }
+
   if (req.method === 'POST') {
     const connection = await createConnection({
       host: process.env.DB_HOST,
@@ -37,7 +41,6 @@ export default async function handler(
       [uuidv4(), req.body.clerk_id, req.body.name]
     );
 
-    // response nothing
     res.status(201).end()
   } else {
     const connection = await createConnection({
