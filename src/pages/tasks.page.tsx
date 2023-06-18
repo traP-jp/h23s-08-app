@@ -3,27 +3,26 @@ import { AiOutlineArrowLeft } from 'react-icons/ai'
 import { IconContext } from 'react-icons'
 import Link from 'next/link'
 import styled from '@emotion/styled'
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, ComponentProps } from 'react';
+import dayjs from 'dayjs';
 
-
+interface Task{
+    taskID: number;
+    taskName: string;
+    taskDue: dayjs.Dayjs;
+}
 const tasks = [{
     taskID: 0,
     taskName: '課題１ですよーーーーーーーーーーーーー', 
-    taskDueYear: 2023, 
-    taskDueMonth: 6, 
-    taskDueDay: 18
+    taskDue: dayjs('2023-06-18 06:00:00')
 },{
     taskID: 1,
     taskName: "課題２",
-    taskDueYear: 2023,
-    taskDueMonth: 6,
-    taskDueDay: 23
+    taskDue: dayjs('2023-06-23 12:00:00')
 },{
     taskID: 2,
     taskName: "課題３",
-    taskDueYear: 2023,
-    taskDueMonth: 6,
-    taskDueDay: 30
+    taskDue: dayjs('2023-06-30 00:00:00')
 }
 ]
 
@@ -38,7 +37,9 @@ function LeftArrowButton(){
     )
 }
 
-type TextProps = Omit<JSX.IntrinsicElements['span'], 'children'> & { children: string };
+interface TextProps extends ComponentProps<'span'> {
+    children: string
+}
 const OmitSpan = styled.span`
     display: block;
     overflow: hidden;
@@ -131,7 +132,7 @@ function EditButton(){
         </EditBack>
     )
 }
-function TaskButton(props: {taskTitle: string, dueYear: number, dueMonth: number, dueDay: number}){
+function TaskButton(props: {taskTitle: string, taskDue: dayjs.Dayjs}){
     return (
         <>
             <DisplayGrid>
@@ -139,7 +140,7 @@ function TaskButton(props: {taskTitle: string, dueYear: number, dueMonth: number
                 <EditButton />
             </DisplayGrid>
             <div>
-                <DueButton>{props.dueYear}年{props.dueMonth}月{props.dueDay}日</DueButton>
+                <DueButton>{props.taskDue.format('YYYY年M月D日 HH:mm　')}</DueButton>
                 <TaskBottomButton>
                     <TaskBottomButtonChild />
                     <TaskBottomButtonChild />
@@ -149,10 +150,10 @@ function TaskButton(props: {taskTitle: string, dueYear: number, dueMonth: number
     )
 }
 
-function TaskList(props: { taskList:  any[]}){
+function TaskList(props: {taskList: Task[]}){
     return (
         <div>
-            {props.taskList.map(task => (<div key={task.taskID}><TaskButton taskTitle={task.taskName} dueYear={task.taskDueYear} dueMonth={task.taskDueMonth} dueDay={task.taskDueDay} /></div>))}
+            {props.taskList.map(task => (<div key={task.taskID}><TaskButton taskTitle={task.taskName} taskDue={task.taskDue} /></div>))}
         </div>
     )
 }
@@ -163,7 +164,7 @@ const Center = styled.div`
     display: flex;
     justify-content: center;
 `
-export default function Home(){
+export default function Tasks(){
     return (
     <Back>
         <LeftArrowButton />
