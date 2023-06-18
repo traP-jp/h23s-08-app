@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Select from '@radix-ui/react-select'
+import { useState } from 'react'
 
 
 const Center = styled.div`
@@ -93,12 +94,18 @@ const DialogTitle = styled(Dialog.Title)`
   font-size: large;
   font-weight: bold;
 `
-const Textarea = styled.textarea`
+const Label = styled.label`
+  font-weight: bold;
+  color: white;
+`
+const Input = styled.input`
   background: white;
   width: calc(100% - 16px);
-  height: 100px;
   border-radius: 4px;
-  padding: 4px;
+  padding: 4px 8px;
+  &::placeholder {
+    color: gray;
+  }
 `
 const DialogOverlay = styled(Dialog.Overlay)`
   background-color: rgba(0, 0, 0, .5);
@@ -112,8 +119,37 @@ interface Props {
   groupList: string[],
 }
 
+const SelectGroup = (props: {groupList: string[]}) => {
+  return (
+    <Select.Root>
+      <SelectTrigger>
+        <Select.Value placeholder='グループを選択' />
+        <Select.Icon />
+      </SelectTrigger>
+    
+      <Select.Portal>
+        <SelectContent>
+          <Select.ScrollUpButton />
+          <Select.Viewport>
+            <Select.Group>
+              {props.groupList.map(group => (
+                <Select.Item key={group} value={group}>
+                  <Select.ItemText>{group}</Select.ItemText>
+                </Select.Item>
+              ))}
+            </Select.Group>
+          </Select.Viewport>
+          <Select.ScrollDownButton />
+          <Select.Arrow />
+        </SelectContent>
+      </Select.Portal>
+    </Select.Root>
+  )
+}
 
 const CreateTaskModal = (props: Props) => {
+  const [title, setTitle] = useState("")
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -124,7 +160,6 @@ const CreateTaskModal = (props: Props) => {
         <Center>
           <DialogContent>
 
-            {/***** BEGIN Tabs *****/}
             <Tabs.Root defaultValue='personal'>
               <TabsList>
                 <TabsTrigger value='personal'>
@@ -137,7 +172,10 @@ const CreateTaskModal = (props: Props) => {
 
               <TabsContent value='personal'>
                 <DialogTitle>タスクを追加</DialogTitle>
-                <Textarea placeholder="ここにタスクを入力"></Textarea>
+                <fieldset>
+                  <Label htmlFor="InputPersonal">タイトル</Label>
+                  <Input id="InputPersonal" placeholder="論文執筆" value={title} onChange={(e) => setTitle(e.target.value)} />
+                </fieldset>
                 <Button>個人に追加</Button>
                 <Dialog.Close asChild>
                   <Button>閉じる</Button>
@@ -146,33 +184,12 @@ const CreateTaskModal = (props: Props) => {
 
               <TabsContent value='group'>
                 <DialogTitle>タスクを追加</DialogTitle>
-                <Textarea placeholder="ここにタスクを入力"></Textarea>
+                <fieldset>
+                  <Label htmlFor="InputGroup">タイトル</Label>
+                  <Input id="InputGroup" placeholder="論文執筆" value={title} onChange={(e) => setTitle(e.target.value)} />
+                </fieldset>
 
-                {/***** BEGIN Select *****/}
-                <Select.Root>
-                  <SelectTrigger>
-                    <Select.Value placeholder='グループを選択' />
-                    <Select.Icon />
-                  </SelectTrigger>
-                
-                  <Select.Portal>
-                    <SelectContent>
-                      <Select.ScrollUpButton />
-                      <Select.Viewport>
-                        <Select.Group>
-                          {props.groupList.map(group => (
-                            <Select.Item key={group} value={group}>
-                              <Select.ItemText>{group}</Select.ItemText>
-                            </Select.Item>
-                          ))}
-                        </Select.Group>
-                      </Select.Viewport>
-                      <Select.ScrollDownButton />
-                      <Select.Arrow />
-                    </SelectContent>
-                  </Select.Portal>
-                </Select.Root>
-                {/***** END Select *****/}
+                <SelectGroup groupList={...props.groupList} />
 
                 <Button>グループに追加</Button>
                 <Dialog.Close asChild>
@@ -180,7 +197,6 @@ const CreateTaskModal = (props: Props) => {
                 </Dialog.Close>
               </TabsContent>
             </Tabs.Root>
-            {/***** END Tabs *****/}
 
           </DialogContent>
         </Center>
