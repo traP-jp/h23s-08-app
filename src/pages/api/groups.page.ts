@@ -9,89 +9,96 @@ interface Group {
   created_at: string
 }
 
-interface GroupRequest extends NextApiRequest {
-  body:
-    | undefined
-    | {
-        method: 'GET'
-      }
-    | {
-        method: 'POST'
-        name: string
-      }
-    | {
-        method: 'PUT'
-        id: string
-        name: string
-      }
+type GetGroupsRequest = NextApiRequest
+interface PostGroupsRequest extends NextApiRequest {
+  body: {
+    name: string
+  }
+}
+interface PutGroupsRequest extends NextApiRequest {
+  body: {
+    id: string
+    name: string
+  }
 }
 
 export default async function handler(
-  req: GroupRequest,
-  res: NextApiResponse<Group[] | null>
+  req: NextApiRequest,
+  res: NextApiResponse
 ) {
-  if (!req.body) {
-    req.body = {
-      method: 'GET',
-    }
+  switch (req.method) {
+    case 'GET':
+      await GET(req as GetGroupsRequest, res as NextApiResponse<Group[]>)
+      break
+    case 'POST':
+      await POST(req as PostGroupsRequest, res)
+      break
+    case 'PUT':
+      await PUT(req as PutGroupsRequest, res)
+      break
+    default:
+      res.status(405).end()
+      break
   }
-  if (req.method !== 'GET' && req.method !== 'POST' && req.method !== 'PUT') {
-    res.status(405).end()
+}
+
+export async function GET(
+  req: GetGroupsRequest,
+  res: NextApiResponse<Group[]>
+) {
+  const connection = await createConnection({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  })
+
+  const [rows] = await connection.execute('SELECT * FROM `groups`')
+
+  res.status(200).json(rows as Group[])
+}
+
+export async function POST(req: PostGroupsRequest, res: NextApiResponse) {
+  if (!req.body.name) {
+    res.status(400).end()
     return
   }
-  req.body.method = req.method
 
-  if (req.method === 'POST') {
-    if (req.body.method !== 'POST' || !req.body.name) {
-      res.status(400).end()
-      return
-    }
+  const connection = await createConnection({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  })
 
-    const connection = await createConnection({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-    })
+  await connection.execute(
+    'INSERT INTO `groups` (`id`, `name`) VALUES (?, ?)',
+    [uuidv4(), req.body.name]
+  )
 
-    await connection.execute(
-      'INSERT INTO `groups` (`id`, `name`) VALUES (?, ?)',
-      [uuidv4(), req.body.name]
-    )
+  res.status(201).end()
+}
 
-    res.status(201).end()
-  } else if (req.method === 'GET') {
-    const connection = await createConnection({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-    })
-
-    const [rows] = await connection.execute('SELECT * FROM `groups`')
-
-    res.status(200).json(rows as Group[])
-  } else if (req.method === 'PUT') {
-    if (req.body.method !== 'PUT' || !req.body.name || !req.body.id) {
-      res.status(400).end()
-      return
-    }
-
-    const connection = await createConnection({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-    })
-
-    await connection.execute('UPDATE `groups` SET `name` = ? WHERE `id` = ?', [
-      req.body.name,
-      req.body.id,
-    ])
-
-    res.status(200).end()
+export async function PUT(req: PutGroupsRequest, res: NextApiResponse) {
+  if (!req.body.name || !req.body.id) {
+    res.status(400).end()
+    return
   }
+
+  const connection = await createConnection({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  })
+
+  await connection.execute('UPDATE `groups` SET `name` = ? WHERE `id` = ?', [
+    req.body.name,
+    req.body.id,
+  ])
+
+  res.status(200).end()
 }

@@ -17,13 +17,22 @@ interface GroupDetail {
 
 export default async function handler(
   req: NextApiRequest,
+  res: NextApiResponse
+) {
+  switch (req.method) {
+    case 'GET':
+      await GET(req, res)
+      break
+    default:
+      res.status(405).end()
+      break
+  }
+}
+
+export async function GET(
+  req: NextApiRequest,
   res: NextApiResponse<GroupDetail>
 ) {
-  if (req.method !== 'GET') {
-    res.status(405).end()
-    return
-  }
-
   const query = req.query as { id: string }
 
   const connection = await createConnection({

@@ -16,9 +16,20 @@ interface GroupsLeaveRequest extends NextApiRequest {
 }
 
 export default async function handler(
-  req: GroupsLeaveRequest,
-  res: NextApiResponse<Group[] | null>
+  req: NextApiRequest,
+  res: NextApiResponse
 ) {
+  switch (req.method) {
+    case 'POST':
+      await POST(req as GroupsLeaveRequest, res)
+      break
+    default:
+      res.status(405).end()
+      break
+  }
+}
+
+export async function POST(req: GroupsLeaveRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.status(405).end()
     return

@@ -18,8 +18,19 @@ interface Whoami {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Whoami>
+  res: NextApiResponse
 ) {
+  switch (req.method) {
+    case 'GET':
+      await GET(req, res as NextApiResponse<Whoami>)
+      break
+    default:
+      res.status(405).end()
+      break
+  }
+}
+
+export async function GET(req: NextApiRequest, res: NextApiResponse<Whoami>) {
   const { userId: clerkId } = getAuth(req)
 
   if (clerkId === null) {

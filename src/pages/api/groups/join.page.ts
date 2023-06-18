@@ -16,14 +16,20 @@ interface GroupsJoinRequest extends NextApiRequest {
 }
 
 export default async function handler(
-  req: GroupsJoinRequest,
-  res: NextApiResponse<Group[] | null>
+  req: NextApiRequest,
+  res: NextApiResponse
 ) {
-  if (req.method !== 'POST') {
-    res.status(405).end()
-    return
+  switch (req.method) {
+    case 'POST':
+      await POST(req as GroupsJoinRequest, res)
+      break
+    default:
+      res.status(405).end()
+      break
   }
+}
 
+export async function POST(req: GroupsJoinRequest, res: NextApiResponse) {
   if (!req.body.user_id || !req.body.group_id) {
     res.status(400).end()
     return
