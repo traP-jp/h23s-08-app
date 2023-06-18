@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { MainView } from '@/components/MainView'
 import { useStageSize } from '@/components/MainView/stageSize'
-import { useEffect, useState } from 'react'
+import { CSSProperties, useEffect, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import styled from '@emotion/styled'
 import { GiHamburgerMenu } from 'react-icons/gi'
@@ -32,7 +32,7 @@ export default function Home() {
       </Head>
       <Main>
         <Wrap
-          style={{ '--width': stageSize.width, '--height': stageSize.height }}
+          style={{ '--width': stageSize.width, '--height': stageSize.height } as CSSProperties}
         >
           <MainView width={stageSize.width} height={stageSize.height} />
           <Dialog.Root open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
