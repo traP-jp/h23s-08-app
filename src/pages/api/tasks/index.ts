@@ -28,9 +28,10 @@ export default function handler(req: NextApiRequest,res: NextApiResponse) {
     );
   }else if(req.method === 'POST'){
     console.log('POST');
+    const task:Task = req.body.task;
     connection.execute(
       'INSERT INTO tasks(id,author_id,title) VALUES(?,?,?)',
-      [ulid(),req.body.username,req.body.taskname],
+      [ulid(),task.author_id,task.title],
       (error,results) => {
         console.log(results);
         res.status(200).send(results);
