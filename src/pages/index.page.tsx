@@ -32,7 +32,12 @@ export default function Home() {
       </Head>
       <Main>
         <Wrap
-          style={{ '--width': stageSize.width, '--height': stageSize.height } as CSSProperties}
+          style={
+            {
+              '--width': stageSize.width,
+              '--height': stageSize.height,
+            } as CSSProperties
+          }
         >
           <MainView width={stageSize.width} height={stageSize.height} />
           <Dialog.Root open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>

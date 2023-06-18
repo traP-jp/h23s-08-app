@@ -4,7 +4,6 @@ import * as Dialog from '@radix-ui/react-dialog'
 import * as Select from '@radix-ui/react-select'
 import { useState } from 'react'
 
-
 const Center = styled.div`
   display: grid;
   place-items: center;
@@ -46,7 +45,7 @@ const DialogContent = styled(Dialog.Content)`
 
   /* 棒の部分 */
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     width: 32px;
@@ -70,7 +69,7 @@ const TabsTrigger = styled(Tabs.Trigger)`
   height: 32px;
   background: #885f30;
   cursor: pointer;
-  &[data-state="active"] {
+  &[data-state='active'] {
     background: #ba9162;
   }
 `
@@ -114,25 +113,24 @@ const Input = styled.input`
   }
 `
 const DialogOverlay = styled(Dialog.Overlay)`
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   inset: 0;
 `
 
-
 interface Props {
-  isLogin: boolean,
-  groupList: string[],
+  isLogin: boolean
+  groupList: string[]
 }
 
-const SelectGroup = (props: {groupList: string[]}) => {
+const SelectGroup = (props: { groupList: string[] }) => {
   return (
     <Select.Root>
       <SelectTrigger>
         <Select.Value placeholder='グループを選択' />
         <Select.Icon />
       </SelectTrigger>
-    
+
       <Select.Portal>
         <SelectContent>
           <Select.ScrollUpButton />
@@ -154,7 +152,7 @@ const SelectGroup = (props: {groupList: string[]}) => {
 }
 
 const CreateTaskModal = (props: Props) => {
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState('')
 
   return (
     <Dialog.Root>
@@ -165,24 +163,24 @@ const CreateTaskModal = (props: Props) => {
         <DialogOverlay />
         <Center>
           <DialogContent>
-
             <Tabs.Root defaultValue='personal'>
               <TabsList>
-                <TabsTrigger value='personal'>
-                  個人
-                </TabsTrigger>
-                <TabsTrigger value='group'>
-                  グループ
-                </TabsTrigger>
+                <TabsTrigger value='personal'>個人</TabsTrigger>
+                <TabsTrigger value='group'>グループ</TabsTrigger>
               </TabsList>
 
               <TabsContent value='personal'>
                 <DialogTitle>タスクを追加</DialogTitle>
                 <fieldset>
-                  <Label htmlFor="InputPersonal">タイトル</Label>
-                  <Input id="InputPersonal" placeholder="論文執筆" value={title} onChange={(e) => setTitle(e.target.value)} />
+                  <Label htmlFor='InputPersonal'>タイトル</Label>
+                  <Input
+                    id='InputPersonal'
+                    placeholder='論文執筆'
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                  />
                 </fieldset>
-                <Button onClick={() => setTitle("")}>個人に追加</Button>
+                <Button onClick={() => setTitle('')}>個人に追加</Button>
                 <Dialog.Close asChild>
                   <Button>閉じる</Button>
                 </Dialog.Close>
@@ -191,19 +189,23 @@ const CreateTaskModal = (props: Props) => {
               <TabsContent value='group'>
                 <DialogTitle>タスクを追加</DialogTitle>
                 <fieldset>
-                  <Label htmlFor="InputGroup">タイトル</Label>
-                  <Input id="InputGroup" placeholder="論文執筆" value={title} onChange={(e) => setTitle(e.target.value)} />
+                  <Label htmlFor='InputGroup'>タイトル</Label>
+                  <Input
+                    id='InputGroup'
+                    placeholder='論文執筆'
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                  />
                 </fieldset>
 
                 <SelectGroup groupList={...props.groupList} />
 
-                <Button onClick={() => setTitle("")}>グループに追加</Button>
+                <Button onClick={() => setTitle('')}>グループに追加</Button>
                 <Dialog.Close asChild>
                   <Button>閉じる</Button>
                 </Dialog.Close>
               </TabsContent>
             </Tabs.Root>
-
           </DialogContent>
         </Center>
       </Dialog.Portal>
