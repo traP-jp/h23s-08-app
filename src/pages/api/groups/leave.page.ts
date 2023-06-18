@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createConnection } from 'mysql2/promise'
+import { connectDb } from '@/utils/db'
+import { Connection } from 'mysql2/promise'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 interface Group {
@@ -30,28 +31,26 @@ export default async function handler(
 }
 
 export async function POST(req: GroupsLeaveRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    res.status(405).end()
-    return
-  }
-
   if (!req.body.user_id || !req.body.group_id) {
     res.status(400).end()
     return
   }
 
-  const connection = await createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  })
+  let connection: Connection | undefined
+  try {
+    connection = await connectDb()
 
-  await connection.execute(
-    'DELETE FROM `group_members` WHERE `group_id` = ? AND `user_id` = ?',
-    [req.body.group_id, req.body.user_id]
-  )
+    await connection.execute(
+      'DELETE FROM `group_members` WHERE `group_id` = ? AND `user_id` = ?',
+      [req.body.group_id, req.body.user_id]
+    )
 
-  res.status(200).end()
+    res.status(200).end()
+  } catch (error) {
+    await connection?.rollback()
+    console.log(error)
+    res.status(500).end()
+  } finally {
+    await connection?.end()
+  }
 }

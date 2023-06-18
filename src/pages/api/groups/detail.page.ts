@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createConnection } from 'mysql2/promise'
+import { connectDb } from '@/utils/db'
+import { Connection } from 'mysql2/promise'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 interface Group {
@@ -33,33 +34,35 @@ export async function GET(
   req: NextApiRequest,
   res: NextApiResponse<GroupDetail>
 ) {
-  const query = req.query as { id: string }
+  let connection: Connection | undefined
+  try {
+    connection = await connectDb()
 
-  const connection = await createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  })
+    const query = req.query as { id: string }
+    const [groups] = await connection.query(
+      'SELECT * FROM `groups` WHERE `id` = ? LIMIT 1',
+      [query.id]
+    )
+    const group = (groups as Group[])[0]
 
-  const [groups] = await connection.query(
-    'SELECT * FROM `groups` WHERE `id` = ? LIMIT 1',
-    [query.id]
-  )
-  const group = (groups as Group[])[0]
+    const [members] = await connection.query(
+      'SELECT (user_id) FROM `group_members` WHERE `group_id` = ?',
+      [query.id]
+    )
 
-  const [members] = await connection.query(
-    'SELECT (user_id) FROM `group_members` WHERE `group_id` = ?',
-    [query.id]
-  )
-
-  res.status(200).json({
-    id: group.id,
-    name: group.name,
-    created_at: group.created_at,
-    members: (members as { user_id: string }[]).map(
-      (member: { user_id: string }) => member.user_id
-    ),
-  })
+    res.status(200).json({
+      id: group.id,
+      name: group.name,
+      created_at: group.created_at,
+      members: (members as { user_id: string }[]).map(
+        (member: { user_id: string }) => member.user_id
+      ),
+    })
+  } catch (error) {
+    await connection?.rollback()
+    console.error(error)
+    res.status(500).end()
+  } finally {
+    await connection?.end()
+  }
 }

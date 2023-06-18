@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createConnection } from 'mysql2/promise'
+import { connectDb } from '@/utils/db'
+import { Connection } from 'mysql2/promise'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -46,17 +47,20 @@ export async function GET(
   req: GetGroupsRequest,
   res: NextApiResponse<Group[]>
 ) {
-  const connection = await createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  })
+  let connection: Connection | undefined
+  try {
+    connection = await connectDb()
 
-  const [rows] = await connection.execute('SELECT * FROM `groups`')
+    const [rows] = await connection.execute('SELECT * FROM `groups`')
 
-  res.status(200).json(rows as Group[])
+    res.status(200).json(rows as Group[])
+  } catch (error) {
+    await connection?.rollback()
+    console.log(error)
+    res.status(500).end()
+  } finally {
+    await connection?.end()
+  }
 }
 
 export async function POST(req: PostGroupsRequest, res: NextApiResponse) {
@@ -65,20 +69,23 @@ export async function POST(req: PostGroupsRequest, res: NextApiResponse) {
     return
   }
 
-  const connection = await createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  })
+  let connection: Connection | undefined
+  try {
+    connection = await connectDb()
 
-  await connection.execute(
-    'INSERT INTO `groups` (`id`, `name`) VALUES (?, ?)',
-    [uuidv4(), req.body.name]
-  )
+    await connection.execute(
+      'INSERT INTO `groups` (`id`, `name`) VALUES (?, ?)',
+      [uuidv4(), req.body.name]
+    )
 
-  res.status(201).end()
+    res.status(201).end()
+  } catch (error) {
+    await connection?.rollback()
+    console.log(error)
+    res.status(500).end()
+  } finally {
+    await connection?.end()
+  }
 }
 
 export async function PUT(req: PutGroupsRequest, res: NextApiResponse) {
@@ -87,18 +94,21 @@ export async function PUT(req: PutGroupsRequest, res: NextApiResponse) {
     return
   }
 
-  const connection = await createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  })
+  let connection: Connection | undefined
+  try {
+    connection = await connectDb()
 
-  await connection.execute('UPDATE `groups` SET `name` = ? WHERE `id` = ?', [
-    req.body.name,
-    req.body.id,
-  ])
+    await connection.execute('UPDATE `groups` SET `name` = ? WHERE `id` = ?', [
+      req.body.name,
+      req.body.id,
+    ])
 
-  res.status(200).end()
+    res.status(200).end()
+  } catch (error) {
+    await connection?.rollback()
+    console.log(error)
+    res.status(500).end()
+  } finally {
+    await connection?.end()
+  }
 }

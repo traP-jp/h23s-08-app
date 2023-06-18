@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createConnection } from 'mysql2/promise'
+import { connectDb } from '@/utils/db'
+import { Connection } from 'mysql2/promise'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 interface Group {
@@ -35,18 +36,21 @@ export async function POST(req: GroupsJoinRequest, res: NextApiResponse) {
     return
   }
 
-  const connection = await createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  })
+  let connection: Connection | undefined
+  try {
+    connection = await connectDb()
 
-  await connection.execute(
-    'INSERT INTO `group_members` (`group_id`, `user_id`) VALUES (?, ?)',
-    [req.body.group_id, req.body.user_id]
-  )
+    await connection.execute(
+      'INSERT INTO `group_members` (`group_id`, `user_id`) VALUES (?, ?)',
+      [req.body.group_id, req.body.user_id]
+    )
 
-  res.status(201).end()
+    res.status(201).end()
+  } catch (error) {
+    await connection?.rollback()
+    console.log(error)
+    res.status(500).end()
+  } finally {
+    await connection?.end()
+  }
 }
