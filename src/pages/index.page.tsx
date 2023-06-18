@@ -1,7 +1,10 @@
 import Head from 'next/head'
 import { MainView } from '@/components/MainView'
+import { useStageSize } from '@/components/MainView/stageSize'
 
 export default function Home() {
+  const [_, setStagetSize] = useStageSize()
+
   return (
     <>
       <Head>
