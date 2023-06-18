@@ -20,6 +20,7 @@ const Button = styled.button`
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 4px;
+  cursor: pointer;
 `
 const ButtonTrigger = styled.button`
   position: fixed;
@@ -33,6 +34,7 @@ const ButtonTrigger = styled.button`
   display: grid;
   place-items: center;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  cursor: pointer;
 `
 const DialogContent = styled(Dialog.Content)`
   /* 板の部分 */
@@ -67,6 +69,7 @@ const TabsTrigger = styled(Tabs.Trigger)`
   border-radius: 4px 4px 0 0;
   height: 32px;
   background: #885f30;
+  cursor: pointer;
   &[data-state="active"] {
     background: #ba9162;
   }
@@ -81,6 +84,7 @@ const TabsContent = styled(Tabs.Content)`
 const SelectTrigger = styled(Select.Trigger)`
   width: calc(100% - 16px);
   color: white;
+  cursor: pointer;
 `
 const SelectContent = styled(Select.Content)`
   padding: 4px 8px;
@@ -88,6 +92,7 @@ const SelectContent = styled(Select.Content)`
   background: #885f30;
   color: white;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  cursor: pointer;
 `
 const DialogTitle = styled(Dialog.Title)`
   color: white;
@@ -103,6 +108,7 @@ const Input = styled.input`
   width: calc(100% - 16px);
   border-radius: 4px;
   padding: 4px 8px;
+  cursor: text;
   &::placeholder {
     color: gray;
   }
@@ -176,7 +182,7 @@ const CreateTaskModal = (props: Props) => {
                   <Label htmlFor="InputPersonal">タイトル</Label>
                   <Input id="InputPersonal" placeholder="論文執筆" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </fieldset>
-                <Button>個人に追加</Button>
+                <Button onClick={() => setTitle("")}>個人に追加</Button>
                 <Dialog.Close asChild>
                   <Button>閉じる</Button>
                 </Dialog.Close>
@@ -191,7 +197,7 @@ const CreateTaskModal = (props: Props) => {
 
                 <SelectGroup groupList={...props.groupList} />
 
-                <Button>グループに追加</Button>
+                <Button onClick={() => setTitle("")}>グループに追加</Button>
                 <Dialog.Close asChild>
                   <Button>閉じる</Button>
                 </Dialog.Close>
