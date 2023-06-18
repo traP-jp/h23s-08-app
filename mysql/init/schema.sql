@@ -34,3 +34,9 @@ CREATE TABLE `tasks_groups` (
   `group_id` CHAR(36) NOT NULL,
   PRIMARY KEY (`task_id`, `group_id`)
 );
+
+CREATE TABLE `group_members` (
+  `group_id` CHAR(36) NOT NULL,
+  `user_id` CHAR(36) NOT NULL,
+  PRIMARY KEY (`group_id`, `user_id`)
+)
