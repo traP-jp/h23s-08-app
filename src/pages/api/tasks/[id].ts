@@ -17,27 +17,7 @@ interface Task {
 }
 
 export default function handler(req: NextApiRequest,res: NextApiResponse) {
-  if (req.method === 'GET') {
-    console.log('GET');
-    connection.execute(
-      'SELECT * FROM tasks',
-      (error, results) => {
-        console.log(results);
-        res.status(200).send(results);
-      }
-    );
-  }else if(req.method === 'POST'){
-    console.log('POST');
-    const task:Task = req.body.task;
-    connection.execute(
-      'INSERT INTO tasks(id,author_id,title) VALUES(?,?,?)',
-      [ulid.ulid(),task.author_id,task.title],
-      (error,results) => {
-        console.log(results);
-        res.status(200).send(results);
-      }
-    )
-  }else if(req.method === 'DELETE'){
+  if(req.method === 'DELETE'){
     const id=req.body.id;
     connection.execute(
       'DELETE FROM tasks WHERE id = ?',[id],
