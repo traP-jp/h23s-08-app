@@ -1,3 +1,11 @@
+body {
+  overflow: hidden;
+}
+
+#_next {
+  overflow: hidden;
+}
+
 /*** The new CSS reset - version 1.8.2 (last updated 23.12.2022) ***/
 
 *:where(
