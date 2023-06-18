@@ -11,6 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.21.3",
     "@babel/runtime": "^7.22.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -51,9 +52,11 @@
     "react-icons": "^4.9.0",
     "swr": "^2.1.5",
     "typescript": "5.0.4",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "eslint-config-prettier": "^8.8.0",
