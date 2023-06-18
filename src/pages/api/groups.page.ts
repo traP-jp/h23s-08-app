@@ -1,27 +1,30 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createConnection } from 'mysql2/promise';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { v4 as uuidv4 } from 'uuid';
+import { createConnection } from 'mysql2/promise'
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Group {
-  id: string,
-  name: string,
+  id: string
+  name: string
   created_at: string
 }
 
-interface GroupRequest extends NextApiRequest{
-  body: undefined | {
-    method: 'GET'
-  } | {
-    method: 'POST',
-    name: string
-  } | {
-    method: 'PUT'
-    id: string,
-    name: string
-  } 
+interface GroupRequest extends NextApiRequest {
+  body:
+    | undefined
+    | {
+        method: 'GET'
+      }
+    | {
+        method: 'POST'
+        name: string
+      }
+    | {
+        method: 'PUT'
+        id: string
+        name: string
+      }
 }
-
 
 export default async function handler(
   req: GroupRequest,
@@ -29,7 +32,7 @@ export default async function handler(
 ) {
   if (!req.body) {
     req.body = {
-      method: 'GET'
+      method: 'GET',
     }
   }
   if (req.method !== 'GET' && req.method !== 'POST' && req.method !== 'PUT') {
@@ -50,12 +53,12 @@ export default async function handler(
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-    });
-    
+    })
+
     await connection.execute(
       'INSERT INTO `groups` (`id`, `name`) VALUES (?, ?)',
       [uuidv4(), req.body.name]
-    );
+    )
 
     res.status(201).end()
   } else if (req.method === 'GET') {
@@ -65,11 +68,9 @@ export default async function handler(
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-    });
+    })
 
-    const [rows] = await connection.execute(
-      'SELECT * FROM `groups`'
-    );
+    const [rows] = await connection.execute('SELECT * FROM `groups`')
 
     res.status(200).json(rows as Group[])
   } else if (req.method === 'PUT') {
@@ -84,13 +85,13 @@ export default async function handler(
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-    });
-    
-    await connection.execute(
-      'UPDATE `groups` SET `name` = ? WHERE `id` = ?',
-      [req.body.name, req.body.id]
-    );
+    })
+
+    await connection.execute('UPDATE `groups` SET `name` = ? WHERE `id` = ?', [
+      req.body.name,
+      req.body.id,
+    ])
 
     res.status(200).end()
-  } 
+  }
 }

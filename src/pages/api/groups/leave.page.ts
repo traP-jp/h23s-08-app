@@ -1,18 +1,18 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createConnection } from 'mysql2/promise';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { createConnection } from 'mysql2/promise'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 interface Group {
-  id: string,
-  name: string,
+  id: string
+  name: string
   created_at: string
 }
 
-interface GroupsLeaveRequest extends NextApiRequest{
+interface GroupsLeaveRequest extends NextApiRequest {
   body: {
-    user_id: string,
+    user_id: string
     group_id: string
-  } 
+  }
 }
 
 export default async function handler(
@@ -23,7 +23,6 @@ export default async function handler(
     res.status(405).end()
     return
   }
-
 
   if (!req.body.user_id || !req.body.group_id) {
     res.status(400).end()
@@ -36,12 +35,12 @@ export default async function handler(
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-  });
-  
+  })
+
   await connection.execute(
     'DELETE FROM `group_members` WHERE `group_id` = ? AND `user_id` = ?',
     [req.body.group_id, req.body.user_id]
-  );
+  )
 
   res.status(200).end()
 }
