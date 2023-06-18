@@ -25,13 +25,13 @@ const ButtonTrigger = styled.button`
   width: 64px;
   height: 64px;
   font-size: 32px;
-  backgroud: white;
+  background: white;
   left: calc(50% - 32px);
   bottom: 16px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  border: 1px solid black;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 `
 const DialogContent = styled(Dialog.Content)`
   /* 板の部分 */
@@ -100,11 +100,10 @@ const Textarea = styled.textarea`
   border-radius: 4px;
   padding: 4px;
 `
-const Overlay = styled(Dialog.Overlay)`
+const DialogOverlay = styled(Dialog.Overlay)`
   background-color: rgba(0, 0, 0, .5);
   position: fixed;
   inset: 0;
-  z-index: -2;
 `
 
 
@@ -121,7 +120,7 @@ const CreateTaskModal = (props: Props) => {
         <ButtonTrigger>+</ButtonTrigger>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Overlay />
+        <DialogOverlay />
         <Center>
           <DialogContent>
 
