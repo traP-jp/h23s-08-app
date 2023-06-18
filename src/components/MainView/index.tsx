@@ -1,5 +1,4 @@
-import { Stage, Container, Text } from '@pixi/react'
-import * as PIXI from 'pixi.js'
+import { Stage, Container } from '@pixi/react'
 import { SwayAquaticPlants } from './SwayAquaticPlants'
 import { Aji } from './Aji'
 import { EiRight } from './EiRight'

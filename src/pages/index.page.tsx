@@ -1,9 +1,15 @@
 import Head from 'next/head'
 import { MainView } from '@/components/MainView'
 import { useStageSize } from '@/components/MainView/stageSize'
+import { useState } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
+import styled from '@emotion/styled'
+import { GiHamburgerMenu } from 'react-icons/gi'
+import Sidebar from '@/component/SideBar'
 
 export default function Home() {
   const [_, setStagetSize] = useStageSize()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
     <>
@@ -15,7 +21,51 @@ export default function Home() {
       </Head>
       <main>
         <MainView width={450} height={800} />
+        <Dialog.Root open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+          <Dialog.Trigger asChild>
+            <ButtonTrigger>
+              <GiHamburgerMenu />
+            </ButtonTrigger>
+          </Dialog.Trigger>
+          <Overlay />
+          <Dialog.Content>
+            <SidebarWrapped
+              close={() => {
+                setIsSidebarOpen(false)
+              }}
+            />
+          </Dialog.Content>
+        </Dialog.Root>
       </main>
     </>
   )
 }
+
+const ButtonTrigger = styled.button`
+  position: fixed;
+  width: 64px;
+  height: 64px;
+  font-size: 32px;
+  color: #edf5f7;
+  left: 16px;
+  top: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  cursor: pointer;
+`
+
+const Overlay = styled(Dialog.Overlay)`
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+`
+
+const SidebarWrapped = styled(Sidebar)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100%;
+`
