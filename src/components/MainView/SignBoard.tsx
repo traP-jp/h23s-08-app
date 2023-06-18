@@ -2,14 +2,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as PIXI from 'pixi.js'
 import { Container, Graphics, Text, useTick } from '@pixi/react'
 import { useSwinger } from '@/utils/useSwinger'
+import { useStageSize } from './stageSize'
 
 interface Props {
   text: string
   x: number
   y: number
+  onLeave?: () => void
 }
 
-export const SignBoard: React.FC<Props> = ({ text, x, y }) => {
+export const SignBoard: React.FC<Props> = ({ text, x, y, onLeave }) => {
+  const [stageSize] = useStageSize()
+
   const containerRef = useRef<PIXI.Container>(null)
 
   const expectedArea = useMemo(() => {
@@ -42,6 +46,13 @@ export const SignBoard: React.FC<Props> = ({ text, x, y }) => {
     addVelocity(delta * 0.02)
     setNowX(prev => prev - velocity)
     setNowY(prev => prev + delta * 0.1)
+
+    if (
+      nowX + expectedArea.width + 20 < 0 &&
+      (nowY + expectedArea.height + 20 < 0 || nowY > stageSize.height)
+    ) {
+      onLeave?.()
+    }
   })
 
   return (
@@ -49,7 +60,6 @@ export const SignBoard: React.FC<Props> = ({ text, x, y }) => {
       <Graphics
         draw={draw}
         interactive={true}
-        buttonMode={true}
         pointerdown={() => console.log('pointerdown')}
       />
       <Text
