@@ -2,15 +2,24 @@ import { Sprite, useTick } from '@pixi/react'
 import EiImg from './assets/fish/ei_right.svg'
 import { useSwinger } from '@/utils/useSwinger'
 import { useState } from 'react'
+import { useStageSize } from './stageSize'
 
 interface Props {
   scale: number
   x: number
   y: number
   baseVelocity: number
+  onLeave?: () => void
 }
 
-export const EiRight: React.FC<Props> = ({ scale, x, y, baseVelocity }) => {
+export const EiRight: React.FC<Props> = ({
+  scale,
+  x,
+  y,
+  baseVelocity,
+  onLeave,
+}) => {
+  const [stageSize] = useStageSize()
   const [velocity, addVelocity] = useSwinger(baseVelocity, [0, baseVelocity])
 
   const [nowX, setNowX] = useState(x)
@@ -20,6 +29,13 @@ export const EiRight: React.FC<Props> = ({ scale, x, y, baseVelocity }) => {
     addVelocity(delta * 0.02)
     setNowX(prev => prev + velocity)
     addNowY(delta * 0.001)
+
+    if (
+      nowX - EiImg.width * scale > stageSize.width &&
+      (nowY + EiImg.height * scale < 0 || nowY > stageSize.height)
+    ) {
+      onLeave?.()
+    }
   })
 
   return (

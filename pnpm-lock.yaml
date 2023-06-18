@@ -101,6 +101,9 @@ dependencies:
   eslint-config-next:
     specifier: 13.4.6
     version: 13.4.6(eslint@8.43.0)(typescript@5.0.4)
+  jotai:
+    specifier: ^2.2.0
+    version: 2.2.0(react@18.2.0)
   mysql2:
     specifier: ^3.3.5
     version: 3.3.5
@@ -3127,6 +3130,18 @@ packages:
 
   /ismobilejs@1.1.1:
     resolution: {integrity: sha512-VaFW53yt8QO61k2WJui0dHf4SlL8lxBofUuUmwBo0ljPk0Drz2TiuDW4jo3wDcv41qy/SxrJ+VAzJ/qYqsmzRw==}
+    dev: false
+
+  /jotai@2.2.0(react@18.2.0):
+    resolution: {integrity: sha512-2gsMVpoaBa6aPHLArNhphck4+n8unZ8xF4Ciqhb+Z+tjsvabn5QFisNFHBMWooMAAmmTNU5TcvBIP8/XAsZy8Q==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /js-cookie@3.0.1:

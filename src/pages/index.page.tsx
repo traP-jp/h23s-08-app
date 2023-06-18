@@ -1,9 +1,26 @@
 import Head from 'next/head'
 import { MainView } from '@/components/MainView'
 import { useStageSize } from '@/components/MainView/stageSize'
+import { CSSProperties, useEffect, useState } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
+import styled from '@emotion/styled'
+import { GiHamburgerMenu } from 'react-icons/gi'
+import Sidebar from '@/component/SideBar'
+import CreateTaskModal from '@/component/CreateTaskModal'
+import { clamp } from '@/utils/clamp'
+import { useScreenSize } from '@/utils/useScreenSize'
 
 export default function Home() {
-  const [_, setStagetSize] = useStageSize()
+  const [stageSize, setStageSize] = useStageSize()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  const screenSize = useScreenSize()
+  useEffect(() => {
+    setStageSize({
+      width: clamp(screenSize.width, [0, 960]),
+      height: screenSize.height,
+    })
+  }, [screenSize.height, screenSize.width, setStageSize])
 
   return (
     <>
@@ -13,9 +30,73 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>
-        <MainView width={450} height={800} />
-      </main>
+      <Main>
+        <Wrap
+          style={{ '--width': stageSize.width, '--height': stageSize.height } as CSSProperties}
+        >
+          <MainView width={stageSize.width} height={stageSize.height} />
+          <Dialog.Root open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+            <Dialog.Trigger asChild>
+              <ButtonTrigger>
+                <GiHamburgerMenu />
+              </ButtonTrigger>
+            </Dialog.Trigger>
+            <Overlay />
+            <Dialog.Content>
+              <SidebarWrapped
+                close={() => {
+                  setIsSidebarOpen(false)
+                }}
+              />
+            </Dialog.Content>
+          </Dialog.Root>
+        </Wrap>
+        <CreateTaskModal
+          isLogin={true}
+          groupList={['グループ1', 'グループ2', 'グループ3']}
+        />
+      </Main>
     </>
   )
 }
+
+const Main = styled.main`
+  display: grid;
+  width: 100vw;
+  place-items: center;
+`
+
+const Wrap = styled.div`
+  position: relative;
+  height: var(--height);
+  width: var(--width);
+`
+
+const ButtonTrigger = styled.button`
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  font-size: 32px;
+  color: #edf5f7;
+  left: 16px;
+  top: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  cursor: pointer;
+`
+
+const Overlay = styled(Dialog.Overlay)`
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+`
+
+const SidebarWrapped = styled(Sidebar)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100%;
+`
